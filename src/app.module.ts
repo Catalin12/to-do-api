@@ -11,7 +11,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 			port: 5432,
 			username: "postgres",
 			password: "",
-			database: "tododb",
+			database: "to-do-db",
 			synchronize: true,
 			entities: ["src/**/*.entity{.ts,.js}"],
 			migrations: ["./src/migrations/*.ts"],
