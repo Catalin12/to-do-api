@@ -2,13 +2,12 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: 'tsconfig.json',
-    tsconfigRootDir : __dirname, 
+    tsconfigRootDir: __dirname,
     sourceType: 'module',
   },
   plugins: ['@typescript-eslint/eslint-plugin'],
   extends: [
     'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended',
   ],
   root: true,
   env: {
@@ -36,23 +35,23 @@ module.exports = {
       rules: {
         eqeqeq: "error",
         quotes: [
-            "error",
-            "double"
+          "error",
+          "double"
         ],
         indent: [
-            "error",
-            "tab",
-            {
-                SwitchCase: 1
-            }
+          "error",
+          "tab",
+          {
+            SwitchCase: 1
+          }
         ],
         "no-empty-function": [
-            "error",
-            {
-                "allow": [
-                    "constructors"
-                ]
-            }
+          "error",
+          {
+            "allow": [
+              "constructors"
+            ]
+          }
         ],
         "no-cond-assign": "error",
         "no-extra-parens": "error",
@@ -61,10 +60,10 @@ module.exports = {
         "space-before-blocks": "warn",
         "comma-spacing": "warn",
         "@typescript-eslint/explicit-member-accessibility": [
-            "error"
+          "error"
         ],
         "@typescript-eslint/explicit-function-return-type": [
-            "error"
+          "error"
         ]
       }
     },
@@ -75,23 +74,23 @@ module.exports = {
       rules: {
         eqeqeq: "error",
         quotes: [
-            "error",
-            "double"
+          "error",
+          "double"
         ],
         indent: [
-            "error",
-            "tab",
-            {
-                SwitchCase: 1
-            }
+          "error",
+          "tab",
+          {
+            SwitchCase: 1
+          }
         ],
         "no-empty-function": [
-            "error",
-            {
-                "allow": [
-                    "constructors"
-                ]
-            }
+          "error",
+          {
+            "allow": [
+              "constructors"
+            ]
+          }
         ],
         "no-cond-assign": "error",
         "no-extra-parens": "error",
@@ -100,10 +99,10 @@ module.exports = {
         "space-before-blocks": "warn",
         "comma-spacing": "warn",
         "@typescript-eslint/explicit-member-accessibility": [
-            "error"
+          "error"
         ],
         "@typescript-eslint/explicit-function-return-type": [
-            "error"
+          "error"
         ]
       }
     }
