@@ -5,14 +5,22 @@ import { Task } from "./task.entity";
 @Injectable()
 export class TaskMapper {
 	public toDTO(entity: Task): TaskDTO {
-		const { id, title, description, isDeleted, isCompleted } = entity;
-		const task: TaskDTO = { id, title, description, isDeleted, isCompleted };
-		return task;
+		return {
+			id: entity.id,
+			title: entity.title,
+			description: entity.description,
+			isDeleted: entity.isDeleted,
+			isCompleted: entity.isCompleted
+		};
 	}
 
 	public toEntity(dto: TaskDTO): Task {
-		const { id, title, description, isDeleted, isCompleted } = dto;
-		const task: Task = { id, title, description, isDeleted, isCompleted };
-		return task;
+		return {
+			id: dto.id,
+			title: dto.title,
+			description: dto.description,
+			isDeleted: dto.isDeleted,
+			isCompleted: dto.isCompleted
+		};
 	}
 }
