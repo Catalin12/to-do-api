@@ -1,28 +1,33 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { InsertResult, Repository } from "typeorm";
 
 import { TaskDTO } from "./task.dto";
 import { Task } from "./task.entity";
+import { TaskMapper } from "./task.mapper";
 
 @Injectable()
 export class TaskService {
 
 	public constructor(
 		@InjectRepository(Task)
-		private taskRepo: Repository<Task>
+		private taskRepo: Repository<Task>,
+		private taskMapper: TaskMapper
 	) { }
 
-	public insertTask(taskDTO: TaskDTO): void {
-		this.taskRepo.insert(taskDTO);
+	public addTask(taskDTO: TaskDTO): Promise<InsertResult> {
+		return this.taskRepo.insert(taskDTO);
 	}
 
-	public async getAllTasks(): Promise<Task[]> {
+	public async getAllTasks(): Promise<TaskDTO[]> {
 		return this.taskRepo.find();
 	}
 
-	public async getTaskById(id: number): Promise<Task> {
-		return this.taskRepo.findOne({ where: { id: id } });
+	public async getTaskById(id: number): Promise<TaskDTO> {
+		//if you have the same names of properties, you can get rid of one of them for eg: { id: id } will be { id }
+		//return this.taskRepo.findOne({ where: { id: id } });
+		const task: Task = await this.taskRepo.findOne({ where: { id: id } });
+		return this.taskMapper.toDTO(task);
 	}
 
 	public async updateTaskById(taskDTO: TaskDTO): Promise<TaskDTO> {
@@ -30,8 +35,8 @@ export class TaskService {
 		return this.taskRepo.findOne({ where: { id: taskDTO.id } });
 	}
 
-	public deleteTaskById(id: number): Promise<TaskDTO> {
-		this.taskRepo.createQueryBuilder()
+	public async deleteTaskById(id: number): Promise<TaskDTO> {
+		await this.taskRepo.createQueryBuilder()
 			.update(Task)
 			.set({ isDeleted: true })
 			.where("id = :id", { id: id })
@@ -40,7 +45,7 @@ export class TaskService {
 	}
 
 	public async updateCompleteTaskById(id: number, status: boolean): Promise<TaskDTO> {
-		this.taskRepo.createQueryBuilder()
+		await this.taskRepo.createQueryBuilder()
 			.update(Task)
 			.set({ isCompleted: status })
 			.where("id = :id", { id: id })

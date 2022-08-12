@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Post, Param, Patch } from "@nestjs/common";
+import { InsertResult } from "typeorm";
 
 import { TaskDTO } from "./task.dto";
 import { Task } from "./task.entity";
@@ -12,12 +13,12 @@ export class TaskController {
 	) { }
 
 	@Post()
-	public addTask(@Body() taskDTO: TaskDTO): void {
-		this.taskService.insertTask(taskDTO);
+	public addTask(@Body() taskDTO: TaskDTO): Promise<InsertResult> {
+		return this.taskService.addTask(taskDTO);
 	}
 
 	@Get()
-	public getAllTasks(): Promise<Task[]> {
+	public getAllTasks(): Promise<TaskDTO[]> {
 		return this.taskService.getAllTasks();
 	}
 
@@ -27,8 +28,7 @@ export class TaskController {
 	}
 
 	@Patch("/update")
-	public updateTaskById(
-		@Body() taskDTO: TaskDTO): Promise<Task> {
+	public updateTaskById(@Body() taskDTO: TaskDTO): Promise<Task> {
 		return this.taskService.updateTaskById(taskDTO);
 	}
 
