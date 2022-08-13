@@ -18,7 +18,7 @@ import { Task } from "./task/task.entity";
 			database: "to-do-db",
 			synchronize: true,
 			entities: [Task],
-			migrations: ["./src/migrations/*.ts"],
+			migrations: ["./src/migrations/*.ts"]
 		}),
 	],
 	controllers: [AppController],

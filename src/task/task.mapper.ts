@@ -14,6 +14,11 @@ export class TaskMapper {
 		};
 	}
 
+	public toDTOs(entities: Task[]): TaskDTO[] {
+		const task: TaskDTO[] = entities;
+		return task;
+	}
+
 	public toEntity(dto: TaskDTO): Task {
 		return {
 			id: dto.id,

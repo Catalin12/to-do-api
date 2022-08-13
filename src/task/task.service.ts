@@ -20,7 +20,9 @@ export class TaskService {
 	}
 
 	public async getAllTasks(): Promise<TaskDTO[]> {
-		return this.taskRepo.find();
+		//return this.taskRepo.find();
+		const task: Task[] = await this.taskRepo.find();
+		return this.taskMapper.toDTOs(task);
 	}
 
 	public async getTaskById(id: number): Promise<TaskDTO> {
@@ -32,7 +34,8 @@ export class TaskService {
 
 	public async updateTaskById(taskDTO: TaskDTO): Promise<TaskDTO> {
 		await this.taskRepo.update(taskDTO.id, taskDTO);
-		return this.taskRepo.findOne({ where: { id: taskDTO.id } });
+		const task: Task = await this.taskRepo.findOne({ where: { id: taskDTO.id } });
+		return this.taskMapper.toDTO(task);
 	}
 
 	public async deleteTaskById(id: number): Promise<TaskDTO> {
@@ -41,7 +44,8 @@ export class TaskService {
 			.set({ isDeleted: true })
 			.where("id = :id", { id: id })
 			.execute();
-		return this.taskRepo.findOne({ where: { id: id } });
+		const task: Task = await this.taskRepo.findOne({ where: { id: id } });
+		return this.taskMapper.toDTO(task);
 	}
 
 	public async updateCompleteTaskById(id: number, status: boolean): Promise<TaskDTO> {
@@ -50,6 +54,7 @@ export class TaskService {
 			.set({ isCompleted: status })
 			.where("id = :id", { id: id })
 			.execute();
-		return this.taskRepo.findOne({ where: { id: id } });
+		const task: Task = await this.taskRepo.findOne({ where: { id: id } });
+		return this.taskMapper.toDTO(task);
 	}
 }
