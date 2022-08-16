@@ -1,10 +1,10 @@
 import { Exclude } from "class-transformer";
-import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 import { Task } from "src/task/task.entity";
 
 @Entity()
-export class User extends BaseEntity {
+export class User {
 
 	@PrimaryGeneratedColumn()
 	public id!: number;

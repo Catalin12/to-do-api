@@ -15,7 +15,7 @@ export class AuthService {
 		private userRepository: Repository<User>,
 		@Inject(AuthHelper)
 		private helper: AuthHelper
-	) { }
+	) {}
 
 	public async register(body: RegisterDto): Promise<User | never> {
 		const { name, email, password }: RegisterDto = body;
@@ -38,7 +38,7 @@ export class AuthService {
 		}
 		const isPasswordValid: boolean = this.helper.isPasswordValid(password, user.password);
 		if (!isPasswordValid) {
-			throw new HttpException("No user found", HttpStatus.NOT_FOUND);
+			throw new HttpException("Wrong password", HttpStatus.NOT_FOUND);
 		}
 		this.userRepository.update(user.id, { lastLoginAt: new Date() });
 		return this.helper.generateToken(user);

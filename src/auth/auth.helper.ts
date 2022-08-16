@@ -13,7 +13,7 @@ export class AuthHelper {
 		@InjectRepository(User)
 		private userRepository: Repository<User>,
 		private jwt: JwtService
-	) { }
+	) {}
 
 	public async decode(token: string): Promise<unknown> {
   		return this.jwt.decode(token, null);
