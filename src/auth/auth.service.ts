@@ -3,8 +3,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
 import { User } from "../user/user.entity";
-import { RegisterDto } from "./register.dto";
-import { LoginDto } from "./login.dto";
+import { RegisterDTO } from "./register.dto";
+import { LoginDTO } from "./login.dto";
 import { AuthHelper } from "./auth.helper";
 
 @Injectable()
@@ -14,11 +14,11 @@ export class AuthService {
 		@InjectRepository(User)
 		private userRepository: Repository<User>,
 		@Inject(AuthHelper)
-		private helper: AuthHelper
+		private authHelper: AuthHelper
 	) {}
 
-	public async register(body: RegisterDto): Promise<User | never> {
-		const { name, email, password }: RegisterDto = body;
+	public async register(registerDTO: RegisterDTO): Promise<User | never> {
+		const { name, email, password }: RegisterDTO = registerDTO;
 		let user: User = await this.userRepository.findOne({ where: { email } });
 		if (user) {
 		  throw new HttpException("Conflict", HttpStatus.CONFLICT);
@@ -26,21 +26,21 @@ export class AuthService {
 		user = new User();
 		user.name = name;
 		user.email = email;
-		user.password = this.helper.encodePassword(password);
+		user.password = this.authHelper.encodePassword(password);
 		return this.userRepository.save(user);
 	}
 
-	public async login(body: LoginDto): Promise<string | never> {
-		const { email, password }: LoginDto = body;
+	public async login(loginDTO: LoginDTO): Promise<string | never> {
+		const { email, password }: LoginDTO = loginDTO;
 		const user: User = await this.userRepository.findOne({ where: { email } });
 		if (!user) {
 			throw new HttpException("No user found", HttpStatus.NOT_FOUND);
 		}
-		const isPasswordValid: boolean = this.helper.isPasswordValid(password, user.password);
+		const isPasswordValid: boolean = this.authHelper.isPasswordValid(password, user.password);
 		if (!isPasswordValid) {
 			throw new HttpException("Wrong password", HttpStatus.NOT_FOUND);
 		}
 		this.userRepository.update(user.id, { lastLoginAt: new Date() });
-		return this.helper.generateToken(user);
+		return this.authHelper.generateToken(user);
 	}
 }
