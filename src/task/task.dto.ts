@@ -4,4 +4,5 @@ export interface TaskDTO {
 	description: string;
 	isDeleted: boolean;
 	isCompleted: boolean;
+	user: number;
 }
