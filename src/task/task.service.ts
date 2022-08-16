@@ -20,9 +20,8 @@ export class TaskService {
 	}
 
 	public async getAllTasks(): Promise<TaskDTO[]> {
-		//return this.taskRepo.find();
-		const task: Task[] = await this.taskRepo.find();
-		return this.taskMapper.toDTOs(task);
+		const tasks: Task[] = await this.taskRepo.find();
+		return this.taskMapper.toDTOs(tasks);
 	}
 
 	public async getTaskById(id: number): Promise<TaskDTO> {
