@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { InsertResult, Repository } from "typeorm";
 
@@ -33,34 +33,48 @@ export class TaskService {
 		return this.taskMapper.toDTOs(tasks);
 	}
 
-	public async getAllTasksByUserId(userId): Promise<TaskDTO[]> {
-		const userDto: UserDTO = await this.userService.getUserById(userId);
+	public async getAllTasksByUserId(userId: string): Promise<TaskDTO[]> {
+		const userDto: UserDTO = await this.userService.getUserById(Number(userId));
 		const user: User = await this.userMapper.toEntity(userDto);
 		const tasks: Task[] = await this.taskRepo.find({
-			where: {user: user},
+			where: { user: user },
 			relations: ["user"]
 		});
 		return this.taskMapper.toDTOs(tasks);
 	}
 
-	public async getTaskById(id: number): Promise<TaskDTO> {
-		//if you have the same names of properties, you can get rid of one of them for eg: { id: id } will be { id }
-		//return this.taskRepo.findOne({ where: { id: id } });
-		const task: Task = await this.taskRepo.findOne({
-			where: { id: id },
-			relations: ["user"]
-		});
-		return this.taskMapper.toDTO(task);
+	public async getTaskById(id: number, userId: string): Promise<TaskDTO> {
+		const userDto: UserDTO = await this.userService.getUserById(Number(userId));
+		const user: User = await this.userMapper.toEntity(userDto);
+		try {
+			const task: Task = await this.taskRepo.findOne({
+				where: {
+					id: id,
+					user: user
+				},
+				relations: ["user"]
+			});
+			return this.taskMapper.toDTO(task);
+		} catch {
+			throw new UnauthorizedException();
+		}
 	}
 
-	public async updateTaskById(taskDTO: TaskDTO): Promise<TaskDTO> {
-		const task: Task = await this.taskMapper.toEntity(taskDTO);
-		await this.taskRepo.update(taskDTO.id, task);
-		const taskUpdated: Task = await this.taskRepo.findOne({ where: { id: taskDTO.id } });
-		return this.taskMapper.toDTO(taskUpdated);
+	public async updateTaskById(taskDTO: TaskDTO, userId: string): Promise<TaskDTO> {
+		const userDto: UserDTO = await this.userService.getUserById(Number(userId));
+		const user: User = await this.userMapper.toEntity(userDto);
+		if(taskDTO.user === user.id) {
+			const task: Task = await this.taskMapper.toEntity(taskDTO);
+			await this.taskRepo.update(taskDTO.id, task);
+			const taskUpdated: Task = await this.taskRepo.findOne({ where: { id: taskDTO.id } });
+			return this.taskMapper.toDTO(taskUpdated);
+		} else {
+			throw new UnauthorizedException();
+		}
 	}
 
 	public async deleteTaskById(id: number): Promise<TaskDTO> {
+		//TODO
 		await this.taskRepo.createQueryBuilder()
 			.update(Task)
 			.set({ isDeleted: true })
@@ -71,6 +85,7 @@ export class TaskService {
 	}
 
 	public async updateCompleteTaskById(id: number, status: boolean): Promise<TaskDTO> {
+		//TODO
 		await this.taskRepo.createQueryBuilder()
 			.update(Task)
 			.set({ isCompleted: status })

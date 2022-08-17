@@ -20,22 +20,25 @@ export class TaskController {
 
 	@Get()
 	@UseGuards(JwtAuthGuard)
-	public getAllTasks(@CurrentUser() id: string): Promise<TaskDTO[]> {
-		return this.taskService.getAllTasksByUserId(id);
+	public getAllTasks(@CurrentUser() userId: string): Promise<TaskDTO[]> {
+		return this.taskService.getAllTasksByUserId(userId);
 	}
 
 	@Get(":id")
-	public getTaskById(@Param("id") id: number): Promise<TaskDTO> {
-		return this.taskService.getTaskById(Number(id));
+	@UseGuards(JwtAuthGuard)
+	public getTaskById(@Param("id") id: number, @CurrentUser() userId: string): Promise<TaskDTO> {
+		return this.taskService.getTaskById(Number(id), userId);
 	}
 
 	@Patch("/update")
-	public updateTaskById(@Body() taskDTO: TaskDTO): Promise<TaskDTO> {
-		return this.taskService.updateTaskById(taskDTO);
+	@UseGuards(JwtAuthGuard)
+	public updateTaskById(@Body() taskDTO: TaskDTO, @CurrentUser() userId: string): Promise<TaskDTO> {
+		return this.taskService.updateTaskById(taskDTO, userId);
 	}
 
 	@Patch(":id")
-	public deleteTaskById(@Param("id") id: number): Promise<TaskDTO> {
+	@UseGuards(JwtAuthGuard)
+	public deleteTaskById(@Param("id") id: number, @CurrentUser() userId: string): Promise<TaskDTO> {
 		return this.taskService.deleteTaskById(Number(id));
 	}
 }
