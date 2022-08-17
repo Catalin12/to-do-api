@@ -1,8 +1,10 @@
-import { Body, Controller, Get, Post, Param, Patch } from "@nestjs/common";
+import { Body, Controller, Get, Post, Param, Patch, UseGuards, Req } from "@nestjs/common";
 import { InsertResult } from "typeorm";
 
 import { TaskDTO } from "./task.dto";
 import { TaskService } from "./task.service";
+import { JwtAuthGuard } from "src/auth/auth.guard";
+import { CurrentUser } from "src/auth/current-user.decorator";
 
 @Controller("task")
 export class TaskController {
@@ -17,8 +19,9 @@ export class TaskController {
 	}
 
 	@Get()
-	public getAllTasks(): Promise<TaskDTO[]> {
-		return this.taskService.getAllTasks();
+	@UseGuards(JwtAuthGuard)
+	public getAllTasks(@CurrentUser() id: string): Promise<TaskDTO[]> {
+		return this.taskService.getAllTasksByUserId(id);
 	}
 
 	@Get(":id")

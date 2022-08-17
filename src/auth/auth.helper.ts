@@ -20,7 +20,9 @@ export class AuthHelper {
 	}
 
 	public async validateUser(decoded: any): Promise<User> {
-  		return this.userRepository.findOne(decoded.id);
+  		return this.userRepository.findOne({
+			where: { id: decoded.id } }
+		);
 	}
 
 	public generateToken(user: User): string {
@@ -36,8 +38,8 @@ export class AuthHelper {
   		return bcrypt.hashSync(password, salt);
 	}
 
-	private async validate(token: string): Promise<boolean | never> {
-		const decoded: unknown = this.jwt.verify(token);
+	public async validate(token: string): Promise<User | never> {
+		const decoded: any = this.jwt.verify(token);
 		if (!decoded) {
 			throw new HttpException("Forbidden", HttpStatus.FORBIDDEN);
 		}
@@ -45,6 +47,6 @@ export class AuthHelper {
 		if (!user) {
 			throw new UnauthorizedException();
 		}
-		return true;
+		return user;
 	}
 }

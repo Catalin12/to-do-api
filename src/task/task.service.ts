@@ -5,6 +5,10 @@ import { InsertResult, Repository } from "typeorm";
 import { TaskDTO } from "./task.dto";
 import { Task } from "./task.entity";
 import { TaskMapper } from "./task.mapper";
+import { UserDTO } from "src/user/user.dto";
+import { User } from "src/user/user.entity";
+import { UserMapper } from "src/user/user.mapper";
+import { UserService } from "src/user/user.service";
 
 @Injectable()
 export class TaskService {
@@ -12,7 +16,9 @@ export class TaskService {
 	public constructor(
 		@InjectRepository(Task)
 		private taskRepo: Repository<Task>,
-		private taskMapper: TaskMapper
+		private taskMapper: TaskMapper,
+		private userService: UserService,
+		private userMapper: UserMapper
 	) { }
 
 	public async addTask(taskDTO: TaskDTO): Promise<InsertResult> {
@@ -22,6 +28,16 @@ export class TaskService {
 
 	public async getAllTasks(): Promise<TaskDTO[]> {
 		const tasks: Task[] = await this.taskRepo.find({
+			relations: ["user"]
+		});
+		return this.taskMapper.toDTOs(tasks);
+	}
+
+	public async getAllTasksByUserId(userId): Promise<TaskDTO[]> {
+		const userDto: UserDTO = await this.userService.getUserById(userId);
+		const user: User = await this.userMapper.toEntity(userDto);
+		const tasks: Task[] = await this.taskRepo.find({
+			where: {user: user},
 			relations: ["user"]
 		});
 		return this.taskMapper.toDTOs(tasks);
