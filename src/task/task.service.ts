@@ -55,10 +55,10 @@ export class TaskService {
 	}
 
 	public async updateTaskById(taskDTO: TaskDTO, userId: string): Promise<TaskDTO> {
-		//TODO
 		const userDto: UserDTO = await this.userService.getUserById(Number(userId));
 		const user: User = await this.userMapper.toEntity(userDto);
 		if(taskDTO.user === user.id) {
+			await this.getTaskById(taskDTO.id, userId); //throws UnauthorizedException if it's not that user's task
 			const task: Task = await this.taskMapper.toEntity(taskDTO);
 			await this.taskRepo.update(taskDTO.id, task);
 			const taskUpdated: Task = await this.taskRepo.findOne({ where: { id: taskDTO.id } });
