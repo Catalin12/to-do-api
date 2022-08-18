@@ -68,15 +68,20 @@ export class TaskService {
 		}
 	}
 
-	public async deleteTaskById(id: number): Promise<TaskDTO> {
+	public async deleteTaskById(id: number, userId: string): Promise<TaskDTO> {
 		//TODO
-		await this.taskRepo.createQueryBuilder()
-			.update(Task)
-			.set({ isDeleted: true })
-			.where("id = :id", { id: id })
-			.execute();
-		const task: Task = await this.taskRepo.findOne({ where: { id: id } });
-		return this.taskMapper.toDTO(task);
+		const taskToBeDeleted = await this.getTaskById(id, userId); //throws UnauthorizedException if it's not that user's task
+		if(Number(userId) === taskToBeDeleted.user) {
+			await this.taskRepo.createQueryBuilder()
+				.update(Task)
+				.set({ isDeleted: true })
+				.where("id = :id", { id: id })
+				.execute();
+			const task: Task = await this.taskRepo.findOne({ where: { id: id } });
+			return this.taskMapper.toDTO(task);
+		} else {
+			throw new UnauthorizedException();
+		}
 	}
 
 	public async updateCompleteTaskById(id: number, status: boolean): Promise<TaskDTO> {

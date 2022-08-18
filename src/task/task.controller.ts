@@ -40,6 +40,6 @@ export class TaskController {
 	@Patch(":id")
 	@UseGuards(JwtAuthGuard)
 	public deleteTaskById(@Param("id") id: number, @CurrentUser() userId: string): Promise<TaskDTO> {
-		return this.taskService.deleteTaskById(Number(id));
+		return this.taskService.deleteTaskById(Number(id), userId);
 	}
 }
