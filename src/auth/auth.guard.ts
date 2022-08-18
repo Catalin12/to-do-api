@@ -9,7 +9,7 @@ export class JwtAuthGuard extends AuthGuard("jwt") implements IAuthGuard {
 
 	public handleRequest(err: unknown, user: User, info: Error): any {
 		if (err || info || !user) {
-			throw err || info || new UnauthorizedException()
+			throw err || info || new UnauthorizedException();
 		}
 		return user;
 	}

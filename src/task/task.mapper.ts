@@ -21,7 +21,7 @@ export class TaskMapper {
 			description: entity.description,
 			isDeleted: entity.isDeleted,
 			isCompleted: entity.isCompleted,
-			user: entity.user?.id
+			userId: entity.user?.id
 		};
 	}
 
@@ -34,7 +34,7 @@ export class TaskMapper {
 	}
 
 	public async toEntity(dto: TaskDTO): Promise<Task> {
-		const userDto: UserDTO =  await this.userService.getUserById(dto.user);
+		const userDto: UserDTO =  await this.userService.getUserById(dto.userId);
 		return {
 			id: dto.id,
 			title: dto.title,
