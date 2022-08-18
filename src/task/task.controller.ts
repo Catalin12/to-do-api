@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Param, Patch, UseGuards, Req } from "@nestjs/common";
+import { Body, Controller, Get, Post, Param, Patch, UseGuards } from "@nestjs/common";
 import { InsertResult } from "typeorm";
 
 import { TaskDTO } from "./task.dto";
@@ -37,9 +37,16 @@ export class TaskController {
 		return this.taskService.updateTaskById(taskDTO, userId);
 	}
 
-	@Patch(":id")
+	@Patch("delete/:id")
 	@UseGuards(JwtAuthGuard)
 	public deleteTaskById(@Param("id") id: number, @CurrentUser() userId: string): Promise<TaskDTO> {
 		return this.taskService.deleteTaskById(Number(id), userId);
+	}
+
+	@Patch("status/:id")
+	@UseGuards(JwtAuthGuard)
+	public updateCompleteTaskById(@Param("id") id: number, @CurrentUser() userId: string): Promise<TaskDTO> {
+		console.log(id, userId);
+		return this.taskService.updateCompleteTaskById(id, userId);
 	}
 }

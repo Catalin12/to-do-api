@@ -69,7 +69,6 @@ export class TaskService {
 	}
 
 	public async deleteTaskById(id: number, userId: string): Promise<TaskDTO> {
-		//TODO
 		const taskToBeDeleted = await this.getTaskById(id, userId); //throws UnauthorizedException if it's not that user's task
 		if(Number(userId) === taskToBeDeleted.user) {
 			await this.taskRepo.createQueryBuilder()
@@ -84,14 +83,18 @@ export class TaskService {
 		}
 	}
 
-	public async updateCompleteTaskById(id: number, status: boolean): Promise<TaskDTO> {
-		//TODO
-		await this.taskRepo.createQueryBuilder()
-			.update(Task)
-			.set({ isCompleted: status })
-			.where("id = :id", { id: id })
-			.execute();
-		const task: Task = await this.taskRepo.findOne({ where: { id: id } });
-		return this.taskMapper.toDTO(task);
+	public async updateCompleteTaskById(id: number, userId: string): Promise<TaskDTO> {
+		const taskToBeUpdated = await this.getTaskById(id, userId); //throws UnauthorizedException if the task's id is not the user's
+		if(Number(userId) === taskToBeUpdated.user) {
+			await this.taskRepo.createQueryBuilder()
+				.update(Task)
+				.set({ isCompleted: !taskToBeUpdated.isCompleted })
+				.where("id = :id", { id: id })
+				.execute();
+			const task: Task = await this.taskRepo.findOne({ where: { id: id } });
+			return this.taskMapper.toDTO(task);
+		} else {
+			throw new UnauthorizedException();
+		}
 	}
 }
