@@ -10,6 +10,7 @@ import { Task } from "./task/task.entity";
 import { UserModule } from "./user/user.module";
 import { User } from "./user/user.entity";
 import { AuthModule } from "./auth/auth.module";
+import { PassportModule } from "@nestjs/passport";
 
 const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
 
@@ -18,6 +19,7 @@ const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
 		TaskModule,
 		UserModule,
 		AuthModule,
+		PassportModule,
 		ConfigModule.forRoot({
 			envFilePath,
 			isGlobal: true

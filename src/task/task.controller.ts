@@ -1,10 +1,13 @@
-import { Body, Controller, Get, Post, Param, Patch } from "@nestjs/common";
+import { Body, Controller, Get, Post, Param, Patch, UseGuards } from "@nestjs/common";
 import { InsertResult } from "typeorm";
 
 import { TaskDTO } from "./task.dto";
 import { TaskService } from "./task.service";
+import { JwtAuthGuard } from "src/auth/auth.guard";
+import { CurrentUser } from "src/auth/current-user.decorator";
 
 @Controller("task")
+@UseGuards(JwtAuthGuard)
 export class TaskController {
 
 	public constructor(
@@ -12,27 +15,32 @@ export class TaskController {
 	) { }
 
 	@Post()
-	public addTask(@Body() taskDTO: TaskDTO): Promise<InsertResult> {
-		return this.taskService.addTask(taskDTO);
+	public addTask(@Body() taskDTO: TaskDTO, @CurrentUser() userId: string): Promise<InsertResult> {
+		return this.taskService.addTask(taskDTO, userId);
 	}
 
 	@Get()
-	public getAllTasks(): Promise<TaskDTO[]> {
-		return this.taskService.getAllTasks();
+	public getAllTasks(@CurrentUser() userId: string): Promise<TaskDTO[]> {
+		return this.taskService.getAllTasksByUserId(userId);
 	}
 
 	@Get(":id")
-	public getTaskById(@Param("id") id: number): Promise<TaskDTO> {
-		return this.taskService.getTaskById(Number(id));
+	public getTaskById(@Param("id") id: number, @CurrentUser() userId: string): Promise<TaskDTO> {
+		return this.taskService.getTaskById(Number(id), userId);
 	}
 
 	@Patch("/update")
-	public updateTaskById(@Body() taskDTO: TaskDTO): Promise<TaskDTO> {
-		return this.taskService.updateTaskById(taskDTO);
+	public updateTaskById(@Body() taskDTO: TaskDTO, @CurrentUser() userId: string): Promise<TaskDTO> {
+		return this.taskService.updateTaskById(taskDTO, userId);
 	}
 
-	@Patch(":id")
-	public deleteTaskById(@Param("id") id: number): Promise<TaskDTO> {
-		return this.taskService.deleteTaskById(Number(id));
+	@Patch("delete/:id")
+	public deleteTaskById(@Param("id") id: number, @CurrentUser() userId: string): Promise<TaskDTO> {
+		return this.taskService.deleteTaskById(Number(id), userId);
+	}
+
+	@Patch("status/:id")
+	public updateCompleteTaskById(@Param("id") id: number, @CurrentUser() userId: string): Promise<TaskDTO> {
+		return this.taskService.updateCompleteTaskById(id, userId);
 	}
 }
