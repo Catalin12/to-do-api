@@ -14,8 +14,9 @@ export class TaskController {
 	) { }
 
 	@Post()
-	public addTask(@Body() taskDTO: TaskDTO): Promise<InsertResult> {
-		return this.taskService.addTask(taskDTO);
+	@UseGuards(JwtAuthGuard)
+	public addTask(@Body() taskDTO: TaskDTO, @CurrentUser() userId: string): Promise<InsertResult> {
+		return this.taskService.addTask(taskDTO, userId);
 	}
 
 	@Get()

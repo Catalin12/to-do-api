@@ -21,16 +21,10 @@ export class TaskService {
 		private userMapper: UserMapper
 	) { }
 
-	public async addTask(taskDTO: TaskDTO): Promise<InsertResult> {
+	public async addTask(taskDTO: TaskDTO, userId: string): Promise<InsertResult> {
+		taskDTO.user = Number(userId);
 		const task: Task = await this.taskMapper.toEntity(taskDTO);
 		return this.taskRepo.insert(task);
-	}
-
-	public async getAllTasks(): Promise<TaskDTO[]> {
-		const tasks: Task[] = await this.taskRepo.find({
-			relations: ["user"]
-		});
-		return this.taskMapper.toDTOs(tasks);
 	}
 
 	public async getAllTasksByUserId(userId: string): Promise<TaskDTO[]> {
@@ -61,6 +55,7 @@ export class TaskService {
 	}
 
 	public async updateTaskById(taskDTO: TaskDTO, userId: string): Promise<TaskDTO> {
+		//TODO
 		const userDto: UserDTO = await this.userService.getUserById(Number(userId));
 		const user: User = await this.userMapper.toEntity(userDto);
 		if(taskDTO.user === user.id) {
