@@ -7,9 +7,9 @@ import { User } from "src/user/user.entity";
 @Injectable()
 export class JwtAuthGuard extends AuthGuard("jwt") implements IAuthGuard {
 
-	public handleRequest(err: unknown, user: User, info: Error): any {
-		if (err || info || !user) {
-			throw err || info || new UnauthorizedException();
+	public handleRequest(error: any, user: User): any {
+		if (error || !user) {
+			throw error || new UnauthorizedException();
 		}
 		return user;
 	}
