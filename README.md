@@ -33,7 +33,8 @@ Replace username and password values with your own database settings.
 
 ### Body
 
-```{
+```
+{
   "email": "email@test.com",
   "password": "123456789",
   "name": "name"
@@ -42,7 +43,8 @@ Replace username and password values with your own database settings.
 
 ### Response
 
-```{
+```
+{
   "name": "name",
   "email": "email@test.com",
   "lastLoginAt": null,
@@ -58,7 +60,8 @@ Replace username and password values with your own database settings.
 
 ### Body
 
-```{
+```
+{
   "email": "email@test.com",
   "password": "123456789"
 }
@@ -80,7 +83,8 @@ The following calls require a Bearer Token
 
 ### Body
 
-```{
+```
+{
 	"title": "title",
 	"description": "description",
 	"isDeleted": false,
@@ -97,16 +101,17 @@ The following calls require a Bearer Token
 
 ### Response
 
-```[
+```
+[
 	{
-    "id": 21,
-    "title": "Gifts",
-    "description": "Buy flowers for mom",
-    "isDeleted": true,
-    "isCompleted": false,
-    "userId": 4
-  },
-  ...
+		"id": 21,
+		"title": "Gifts",
+		"description": "Buy flowers for mom",
+		"isDeleted": true,
+		"isCompleted": false,
+		"userId": 4
+	},
+	...
 ]
 ```
 
@@ -138,7 +143,8 @@ Returns the updated object with "isCompleted" modified
 
 ### Body
 
-```{
+```
+{
 	"id": 1,
 	"title": "title",
 	"description": "description",
