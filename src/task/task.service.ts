@@ -32,6 +32,7 @@ export class TaskService {
 		const user: User = await this.userMapper.toEntity(userDto);
 		const tasks: Task[] = await this.taskRepo.find({
 			where: { user: user },
+			order: { "id": "DESC" },
 			relations: ["user"]
 		});
 		return this.taskMapper.toDTOs(tasks);
@@ -57,7 +58,7 @@ export class TaskService {
 	public async updateTaskById(taskDTO: TaskDTO, userId: string): Promise<TaskDTO> {
 		const userDto: UserDTO = await this.userService.getUserById(Number(userId));
 		const user: User = await this.userMapper.toEntity(userDto);
-		if(taskDTO.userId === user.id) {
+		if (taskDTO.userId === user.id) {
 			await this.getTaskById(taskDTO.id, userId); //throws UnauthorizedException if it's not that user's task
 			const task: Task = await this.taskMapper.toEntity(taskDTO);
 			await this.taskRepo.update(taskDTO.id, task);
@@ -70,7 +71,7 @@ export class TaskService {
 
 	public async deleteTaskById(id: number, userId: string): Promise<TaskDTO> {
 		const taskToBeDeleted = await this.getTaskById(id, userId); //throws UnauthorizedException if it's not that user's task
-		if(Number(userId) === taskToBeDeleted.userId) {
+		if (Number(userId) === taskToBeDeleted.userId) {
 			await this.taskRepo.createQueryBuilder()
 				.update(Task)
 				.set({ isDeleted: true })
@@ -85,7 +86,7 @@ export class TaskService {
 
 	public async updateCompleteTaskById(id: number, userId: string): Promise<TaskDTO> {
 		const taskToBeUpdated = await this.getTaskById(id, userId); //throws UnauthorizedException if the task's id is not the user's
-		if(Number(userId) === taskToBeUpdated.userId) {
+		if (Number(userId) === taskToBeUpdated.userId) {
 			await this.taskRepo.createQueryBuilder()
 				.update(Task)
 				.set({ isCompleted: !taskToBeUpdated.isCompleted })
