@@ -3,8 +3,7 @@
 ##Configuration
 Add a new file named "typeorm.config.ts" in /src folder with the content:
 
-```
-import { TypeOrmModuleOptions } from "@nestjs/typeorm";
+```import { TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { Task } from "./task/task.entity";
 import { User } from "./user/user.entity";
 
