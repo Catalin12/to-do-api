@@ -1,6 +1,7 @@
-#Usage
+# Usage
 
-##Configuration
+## Configuration
+
 Add a new file named "typeorm.config.ts" in /src folder with the content:
 
 ```import { TypeOrmModuleOptions } from "@nestjs/typeorm";
